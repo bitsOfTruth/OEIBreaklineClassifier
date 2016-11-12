@@ -36,11 +36,7 @@ public class CrossSectionTest {
 	@Test
 	public void testRanking() {
 		CrossSection c = new CrossSection("test", 1.0f, genRankArr(), 0);
-		System.out.println("BEFORE");
-		testDump(c);
 		c.rank();
-		System.out.println("AFTER");
-		testDump(c);
 		assert isCorrectRanking(c);
 	}
 
@@ -48,11 +44,7 @@ public class CrossSectionTest {
 	public void testCalculationAndRanking() {
 		CrossSection c = new CrossSection("test", 2.0f, new ArrayList<CrossSectionPoint>(Arrays.asList(calcTestArr)), 0);
 		c.calculateInflections();
-		System.out.println("BEFORE");
-		testDump(c);
 		c.rank();
-		System.out.println("AFTER");
-		testDump(c);
 		assert isCorrectRanking(c);
 	}
 

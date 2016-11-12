@@ -96,4 +96,4 @@ run:
 #
 
 clean:
-	$(RM) $(PTH)/*.class
+	$(RM) $(PTH)/*.class tests/*.out

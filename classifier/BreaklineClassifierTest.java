@@ -15,7 +15,7 @@ import java.io.IOException;
 public class BreaklineClassifierTest {
 
 	/** Input test file path. */
-	private String filePath = "input/Yellowjacket1.txt";
+	private String filePath = "tests/Yellowjacket1.txt";
 
 	@Test
 	public void testApp() throws FileNotFoundException, IOException {

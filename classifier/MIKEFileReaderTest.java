@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class MIKEFileReaderTest {
 
 	/* Test variables */
-	private static String filePath = "input/MIKEreadertest.txt";
+	private static String filePath = "tests/MIKEreadertest.txt";
 
 	// Currently not testing anything
 	@Test
@@ -43,12 +43,8 @@ public class MIKEFileReaderTest {
 		while (reader.hasNext()) {
 			csArr[i] = reader.getNext();
 			csArr[i].calculateInflections();
-			System.out.println("BEFORE");
-			CrossSectionTest.testDump(csArr[i]);
 			csArr[i].rank();
 			csArr[i].calculateThalwegDistances();
-			System.out.println("AFTER");
-			CrossSectionTest.testDump(csArr[i]);
 			assert CrossSectionTest.isCorrectRanking(csArr[i]);
 			i++;
 		}
