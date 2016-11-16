@@ -88,7 +88,7 @@ check: $(TEST_CLASSES:.java=.class)
 $(TEST_CLASSES:.java=.class): $(TEST_CLASSES)
 	javac -cp .:/usr/share/java/junit4.jar $(TEST_CLASSES)
 
-run:
+runtests:
 	java -cp .:/usr/share/java/junit4.jar org.junit.runner.JUnitCore $(TEST_RUN)
 
 #

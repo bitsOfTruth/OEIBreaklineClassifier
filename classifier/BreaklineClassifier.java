@@ -24,23 +24,48 @@ public class BreaklineClassifier {
 		 * file. This file is associated with a PrintWriter, which will
 		 * be wrapped in an OutputFormatter to handle the construction
 		 * of the output file. */
-		MIKEFileReader reader = new MIKEFileReader(reader(args[0]));
-		File outputFile = new File(getOutputPath(args[0]));
-		OutputFormatter out = new OutputFormatter(new PrintWriter(outputFile));
+
+		/* The call to reader() throws a FileNotFoundException, the MIKEFileReader
+		 * constructor throws an IOException. The File call throws a NUllPointer.
+		 * PrintWriter throws FileNotFoundException. */
+		try {
+			MIKEFileReader reader = new MIKEFileReader(reader(args[0]));
+			File outputFile = new File(getOutputPath(args[0]));
+			OutputFormatter out = new OutputFormatter(new PrintWriter(outputFile));
+		} catch (FileNotFoundException excp) {
+			System.err.println("File \"" + args[0] + "\" not found.");
+			System.exit(1);
+		} catch (IOException excp) {
+			System.err.println("IO error on read of \"" + args[0] + "\".");
+			System.exit(1);
+		} catch (NullPointerException excp) {
+			System.err.println("Null pointer error, call Trevor.");
+			System.exit(1);
+		}
 
 		/* Iterates through the input file, parsing a CrossSection at a time.
 		 * Once each CrossSection is parsed, calculates the desired metrics,
 		 * and writes them to the output file. */
 		CrossSection c;
 		while (reader.hasNext()) {
-			c = reader.getNext();
+			try {
+				c = reader.getNext();
+			} catch (IOException excp) {
+				System.err.println("IO error while parsing CrossSection.");
+				System.exit(1);
+			}
 			c.analyze();
 			out.write(c);
 		}
 
 		/* After the input is entirely read and the output entirely written,
 		 * close all Readers and Writers. */
-		reader.close();
+		try {
+			reader.close();
+		} catch (IOException excp) {
+			System.err.println("IO error on closure of reader, Google for more info");
+			System.exit(1);
+		}
 		out.close();
 
 	}
