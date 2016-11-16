@@ -28,10 +28,30 @@ public class BreaklineClassifier {
 		/* The call to reader() throws a FileNotFoundException, the MIKEFileReader
 		 * constructor throws an IOException. The File call throws a NUllPointer.
 		 * PrintWriter throws FileNotFoundException. */
+
+		MIKEFileReader reader;
+		File outputFile;
+		OutputFormatter out;
+
 		try {
-			MIKEFileReader reader = new MIKEFileReader(reader(args[0]));
-			File outputFile = new File(getOutputPath(args[0]));
-			OutputFormatter out = new OutputFormatter(new PrintWriter(outputFile));
+			reader = new MIKEFileReader(reader(args[0]));
+			outputFile = new File(getOutputPath(args[0]));
+			out = new OutputFormatter(new PrintWriter(outputFile));
+
+			/* Iterates through the input file, parsing a CrossSection at a time.
+		 	 * Once each CrossSection is parsed, calculates the desired metrics,
+		 	 * and writes them to the output file. */
+			CrossSection c = null;
+			while (reader.hasNext()) {
+				c = reader.getNext();
+				c.analyze();
+				out.write(c);
+			}
+
+			/* After the input is entirely read and the output entirely written,
+			 * close all Readers and Writers. */
+			reader.close();
+			out.close();
 		} catch (FileNotFoundException excp) {
 			System.err.println("File \"" + args[0] + "\" not found.");
 			System.exit(1);
@@ -43,31 +63,7 @@ public class BreaklineClassifier {
 			System.exit(1);
 		}
 
-		/* Iterates through the input file, parsing a CrossSection at a time.
-		 * Once each CrossSection is parsed, calculates the desired metrics,
-		 * and writes them to the output file. */
-		CrossSection c;
-		while (reader.hasNext()) {
-			try {
-				c = reader.getNext();
-			} catch (IOException excp) {
-				System.err.println("IO error while parsing CrossSection.");
-				System.exit(1);
-			}
-			c.analyze();
-			out.write(c);
-		}
-
-		/* After the input is entirely read and the output entirely written,
-		 * close all Readers and Writers. */
-		try {
-			reader.close();
-		} catch (IOException excp) {
-			System.err.println("IO error on closure of reader, Google for more info");
-			System.exit(1);
-		}
-		out.close();
-
+		
 	}
 
 	/** Returns a BufferedReader wrapping a FileReader that will read the input. */

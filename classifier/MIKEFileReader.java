@@ -7,6 +7,7 @@
 package classifier;
 
 import java.io.IOException;
+import java.lang.NumberFormatException;
 import java.io.BufferedReader;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
@@ -76,8 +77,14 @@ class MIKEFileReader {
 		String str;
 		for (int i = 0; i < strArr.length; i++) {
 			str = strArr[i];
-			if (!str.equals(""))
-				return Float.parseFloat(str);
+			if (!str.equals("")) {
+				try {
+					return Float.parseFloat(str);
+				} catch (NumberFormatException excp) {
+					System.err.println("The CrossSection ID isn't a number, the file's format may be incorrect.");
+					System.exit(1);
+				}
+			}
 		}
 		return 0.0f;
 	}
@@ -86,7 +93,14 @@ class MIKEFileReader {
 	 *  given line. Behavior is undefined if the correct line is not given. */
 	private static int getSize(String line) {
 		String[] strArr = line.split("\\s+");
-		return Integer.parseInt(strArr[1]);
+		try {
+			return Integer.parseInt(strArr[1]);
+		} catch (NumberFormatException excp) {
+			System.err.println("The CrossSection size isn't a number, the file's format may be incorrect.");
+			System.exit(1);
+		}
+
+		return 0;
 	}
 
 	// WILL NEED MORE METHODS (?)
@@ -94,8 +108,15 @@ class MIKEFileReader {
 	/** Extracts the data for a CrossSectionPoint, constructs it, and returns it. */
 	private static CrossSectionPoint extractPoint(String line) {
 		String[] strArr = line.split("\\s+");
-		return new CrossSectionPoint(Float.parseFloat(strArr[1]),
+		try {
+			return new CrossSectionPoint(Float.parseFloat(strArr[1]),
 					     Float.parseFloat(strArr[2]));
+		} catch (NumberFormatException excp) {
+			System.err.println("One of the points contains non-numerical characters, the file's format may be incorrect.");
+			System.exit(1);
+		}
+
+		return null;
 	}
 
 	/** Skips N lines of the file wrapped by _reader. */
