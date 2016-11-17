@@ -25,10 +25,6 @@ public class BreaklineClassifier {
 		 * be wrapped in an OutputFormatter to handle the construction
 		 * of the output file. */
 
-		/* The call to reader() throws a FileNotFoundException, the MIKEFileReader
-		 * constructor throws an IOException. The File call throws a NUllPointer.
-		 * PrintWriter throws FileNotFoundException. */
-
 		MIKEFileReader reader;
 		File outputFile;
 		OutputFormatter out;
@@ -48,8 +44,6 @@ public class BreaklineClassifier {
 				out.write(c);
 			}
 
-			/* After the input is entirely read and the output entirely written,
-			 * close all Readers and Writers. */
 			reader.close();
 			out.close();
 		} catch (FileNotFoundException excp) {

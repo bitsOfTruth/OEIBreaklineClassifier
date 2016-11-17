@@ -103,8 +103,6 @@ class MIKEFileReader {
 		return 0;
 	}
 
-	// WILL NEED MORE METHODS (?)
-	
 	/** Extracts the data for a CrossSectionPoint, constructs it, and returns it. */
 	private static CrossSectionPoint extractPoint(String line) {
 		String[] strArr = line.split("\\s+");
