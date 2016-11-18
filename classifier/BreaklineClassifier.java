@@ -17,21 +17,37 @@ import java.io.FileNotFoundException;
 public class BreaklineClassifier {
 
 	/** Main method. */
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args) {
 		
-		/* For now, assumes only a single input file. Takes this file
-		 * in and constructs a reader for it, and initializes an output
-		 * file. This file is associated with a PrintWriter, which will
-		 * be wrapped in an OutputFormatter to handle the construction
-		 * of the output file. */
+		/* Takes this file in and constructs a reader for it, and 
+		 * initializes an output file. This file is associated with a
+		 * PrintWriter, which will be wrapped in an OutputFormatter to
+		 * handle the construction of the output file. */
+
+		File path = new File(args[0]);
+
+		/* Check if this File is a directory, and if so, analyzes each file.
+		 * Otherwise, analyze the File. */
+		if (path.isDirectory()) {
+			for (File file : path.listFiles()) {
+				run(file);
+			}
+		} else {
+			run(path);
+		}
+	}
+
+	/** Takes in a single input file and writes the corresponding output file
+	 *  to the same directory. */
+	private static void run(File pathname) {
 
 		MIKEFileReader reader;
 		File outputFile;
 		OutputFormatter out;
 
 		try {
-			reader = new MIKEFileReader(reader(args[0]));
-			outputFile = new File(getOutputPath(args[0]));
+			reader = new MIKEFileReader(reader(pathname));
+			outputFile = new File(getOutputPath(pathname.getName()));
 			out = new OutputFormatter(new PrintWriter(outputFile));
 
 			/* Iterates through the input file, parsing a CrossSection at a time.
@@ -47,21 +63,20 @@ public class BreaklineClassifier {
 			reader.close();
 			out.close();
 		} catch (FileNotFoundException excp) {
-			System.err.println("File \"" + args[0] + "\" not found.");
+			System.err.println("File \"" + pathname.getName() + "\" not found.");
 			System.exit(1);
 		} catch (IOException excp) {
-			System.err.println("IO error on read of \"" + args[0] + "\".");
+			System.err.println("IO error on read of \"" + pathname.getName() + "\".");
 			System.exit(1);
 		} catch (NullPointerException excp) {
 			System.err.println("Null pointer error, call Trevor.");
 			System.exit(1);
 		}
 
-		
 	}
 
 	/** Returns a BufferedReader wrapping a FileReader that will read the input. */
-	private static BufferedReader reader(String path) throws FileNotFoundException {
+	private static BufferedReader reader(File path) throws FileNotFoundException {
 		return new BufferedReader(new FileReader(path));
 	}
 

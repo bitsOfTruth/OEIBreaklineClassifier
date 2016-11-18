@@ -54,7 +54,6 @@ TEST_CLASSES = \
 	$(PTH)/CrossSectionPointTest.java \
 	$(PTH)/CrossSectionTest.java \
 	$(PTH)/MIKEFileReaderTest.java \
-	$(PTH)/OutputFormatterTest.java \
 	$(PTH)/BreaklineClassifierTest.java
 
 TST = classifier.
@@ -63,7 +62,6 @@ TEST_RUN = \
 	$(TST)CrossSectionPointTest \
 	$(TST)CrossSectionTest \
 	$(TST)MIKEFileReaderTest \
-	$(TST)OutputFormatterTest \
 	$(TST)BreaklineClassifierTest
 
 #
@@ -96,4 +94,4 @@ runtests:
 #
 
 clean:
-	$(RM) $(PTH)/*.class tests/*.out
+	$(RM) $(PTH)/*.class tests/*.out ./*.out
