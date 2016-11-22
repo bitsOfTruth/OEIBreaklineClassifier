@@ -64,13 +64,10 @@ public class BreaklineClassifier {
 			out.close();
 		} catch (FileNotFoundException excp) {
 			System.err.println("File \"" + pathname.getName() + "\" not found.");
-			System.exit(1);
 		} catch (IOException excp) {
 			System.err.println("IO error on read of \"" + pathname.getName() + "\".");
-			System.exit(1);
 		} catch (NullPointerException excp) {
 			System.err.println("Null pointer error, call Trevor.");
-			System.exit(1);
 		}
 
 	}

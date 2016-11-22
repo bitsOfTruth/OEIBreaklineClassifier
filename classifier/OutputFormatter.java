@@ -42,7 +42,7 @@ class OutputFormatter {
 	/** Writes the header of a CrossSection to _writer, given the name NAME
 	 *  and the id ID. */
 	private void writeHeader() {
-		_writer.println("       River          Location     x        y       rank    x-dist   y-dist ");
+		_writer.println("       River          Chainage     x        y       rank    x-dist   y-dist ");
 		_writer.println("-------------------- ---------- -------- -------- -------- -------- --------");
 	}
 
