@@ -20,11 +20,22 @@ class OutputFormatter {
 	/** The DecimalFormat object for rounding values for String output. */
 	private DecimalFormat _df;
 
+	/** The DecimalFormat object for rounding values for the chainage. */
+	private DecimalFormat _chainageFormat;
+
+	/** The DecimalFormat object for rounding values for the x values. */
+	private DecimalFormat _xf;
+
 	/** Constructs a new OutputFormatter with _writer WRITER. */
 	OutputFormatter(PrintWriter writer) {
 		_writer = writer;
 		_df = new DecimalFormat("#.###");
 		_df.setRoundingMode(RoundingMode.HALF_UP);
+		_chainageFormat = new DecimalFormat("#.##");
+		_chainageFormat.setRoundingMode(RoundingMode.HALF_UP);
+		_chainageFormat.setMinimumFractionDigits(2);
+		_xf = new DecimalFormat("#");
+		_xf.setRoundingMode(RoundingMode.HALF_UP);
 		writeHeader();
 	}
 
@@ -42,14 +53,14 @@ class OutputFormatter {
 	/** Writes the header of a CrossSection to _writer, given the name NAME
 	 *  and the id ID. */
 	private void writeHeader() {
-		_writer.println("       River          Chainage     x        y       rank    x-dist   y-dist ");
-		_writer.println("-------------------- ---------- -------- -------- -------- -------- --------");
+		_writer.println("       River          Chainage     x        y       rank    x-dist   y-dist   Location ");
+		_writer.println("-------------------- ---------- -------- -------- -------- -------- -------- ----------");
 	}
 
 	/** Writes the data of a single CrossSectionPoint P with name NAME and
 	 *  id ID to _writer. */
 	private void writePoint(CrossSectionPoint p, String name, float id) {
-		String idStr = Float.toString(id);
+		String idStr = _chainageFormat.format(id);
 		String x = Float.toString(p.getX());
 		String y = Float.toString(p.getY());
 		String rank = Integer.toString(p.getRank());
@@ -62,7 +73,8 @@ class OutputFormatter {
 		rank = rank + getSpaces(8-rank.length());
 		hDist = hDist + getSpaces(8-hDist.length());
 		vDist = vDist + getSpaces(8-vDist.length());
-		_writer.println(name+" "+idStr+" "+x+" "+y+" "+rank+" "+hDist+" "+vDist);
+		String location = _chainageFormat.format(id)+"_"+_xf.format(p.getX() * ((float) 3.28));
+		_writer.println(name+" "+idStr+" "+x+" "+y+" "+rank+" "+hDist+" "+vDist+" "+location);
 	}
 
 	/** Returns a String of LEN whitespaces to fill the remaining space on a

@@ -47,7 +47,7 @@ public class BreaklineClassifier {
 
 		try {
 			reader = new MIKEFileReader(reader(pathname));
-			outputFile = new File(getOutputPath(pathname.getName()));
+			outputFile = new File(getOutputPath(pathname.getAbsolutePath()));
 			out = new OutputFormatter(new PrintWriter(outputFile));
 
 			/* Iterates through the input file, parsing a CrossSection at a time.

@@ -94,4 +94,4 @@ runtests:
 #
 
 clean:
-	$(RM) $(PTH)/*.class tests/*.out ./*.out
+	$(RM) $(PTH)/*.class tests/*.out tests/testdir/*.out ./*.out
