@@ -73,7 +73,7 @@ class OutputFormatter {
 		rank = rank + getSpaces(8-rank.length());
 		hDist = hDist + getSpaces(8-hDist.length());
 		vDist = vDist + getSpaces(8-vDist.length());
-		String location = _chainageFormat.format(id)+"_"+_xf.format(p.getX() * ((float) 3.28));
+		String location = _chainageFormat.format(id)+"_"+_xf.format(metersToFeet(p.getX()));
 		_writer.println(name+" "+idStr+" "+x+" "+y+" "+rank+" "+hDist+" "+vDist+" "+location);
 	}
 
@@ -85,6 +85,11 @@ class OutputFormatter {
 			result = result + " ";
 		}
 		return result;
+	}
+
+	/** Converts meters to feet. */
+	static float metersToFeet(float meters) {
+		return meters * ((float) 3.28);
 	}
 
 	/** Closes the _writer for this PrintWriter. Should only be called when after

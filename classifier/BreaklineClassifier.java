@@ -16,9 +16,25 @@ import java.io.FileNotFoundException;
 
 public class BreaklineClassifier {
 
+	/** Length of the options string argument. */
+	private static final int OPTIONS_LENGTH = 3;
+
 	/** Main method. */
 	public static void main(String[] args) {
 		
+		boolean[] opt;
+
+		/* Check the format of the arguments and format accordingly. */
+		if (!argLenIsValid(args)) {
+			System.err.println("Invalid number of arguments. Check the format and number of arguments.");
+			System.exit(1);
+		} else if (args.length >= 3) {
+			opt = parseOptions(args);
+			// FIXME Add procedures and data for the options here.
+		} else {
+			opt = { false, false, false };
+		}
+
 		/* Takes this file in and constructs a reader for it, and 
 		 * initializes an output file. This file is associated with a
 		 * PrintWriter, which will be wrapped in an OutputFormatter to
@@ -30,23 +46,57 @@ public class BreaklineClassifier {
 		 * Otherwise, analyze the File. */
 		if (path.isDirectory()) {
 			for (File file : path.listFiles()) {
-				run(file);
+				run(file, opt);
 			}
 		} else {
-			run(path);
+			run(path, opt);
 		}
+	}
+
+	/** Takes in a String array and determines if it is a valid argument array
+	 *  for the BreaklineClassifier. */
+	private static boolean argLenIsValid(String[] args) {
+		return args.length == 1 || (args.length >= 3 && args.length <= 5);
+	}
+
+	/** Takes in a String array ARGS and determines if it has a valid options argument,
+	 *  and if the argument array contains the according number of arguments following
+	 *  the options. */
+	private static boolean[] parseOptions(String[] args) {
+		/* Extract the options string argument from the arguments string
+		 * and check that it is the correct length. */
+		boolean[] result = new boolean[OPTIONS_LENGTH];
+		String opt = args[1];
+		if (opt.length() != OPTIONS_LENGTH) {
+			System.err.println("Invalid length of the options string.");
+			System.exit(1);
+		}
+
+		/* Iterate through the options string, checking for invalid characters as
+		 * we go. Set each value of the result array. */
+		char c;
+		for (int i = 0; i < OPTIONS_LENGTH; i++) {
+			c = opt.charAt(i);
+			if (c != '1' && c != '0') {
+				System.err.println("Invalid character \"" + c.toString() + "\" in the options string.");
+				System.exit(1);
+			}
+			result[i] = c == '1';
+		}
+
+		return result;
 	}
 
 	/** Takes in a single input file and writes the corresponding output file
 	 *  to the same directory. */
-	private static void run(File pathname) {
+	private static void run(File pathname, boolean[] options) {
 
 		MIKEFileReader reader;
 		File outputFile;
 		OutputFormatter out;
 
 		try {
-			reader = new MIKEFileReader(reader(pathname));
+			reader = new MIKEFileReader(reader(pathname)); 
 			outputFile = new File(getOutputPath(pathname.getAbsolutePath()));
 			out = new OutputFormatter(new PrintWriter(outputFile));
 
