@@ -23,7 +23,7 @@ public class BreaklineClassifier {
 	/** Main method. */
 	public static void main(String[] args) {
 		
-		String[] opt;
+		int[] opt;
 
 		/* Check the format of the arguments and format accordingly. */
 		if (!argLenIsValid(args)) {
@@ -60,7 +60,8 @@ public class BreaklineClassifier {
 	/** Takes in a String array ARGS and determines if it has a valid options argument,
 	 *  and if the argument array contains the according number of arguments following
 	 *  the options. */
-	private static String[] parseOptions(String[] args) {
+	// FIXME Should be made private unless testing.
+	static int[] parseOptions(String[] args) {
 
 		int[] result = new int[OPTIONS_LENGTH];
 		if (args.length == 1) {
@@ -85,15 +86,15 @@ public class BreaklineClassifier {
 		for (int i = 0; i < OPTIONS_LENGTH; i++) {
 			c = opt.charAt(i);
 			if (c != '1' && c != '0') {
-				System.err.println("Invalid character \"" + c.toString() + "\" in the options string.");
-				System.exit(1);
+				System.err.println("Invalid character \"" + Character.toString(c) + "\" in the options string.");
+				// System.exit(1);
 			} else if (c == '1') {
 				try {
 					result[i] = checkArg(Integer.parseInt(args[argIndex]));
 					argIndex++;
 				} catch (NumberFormatException excp) {
 					System.err.println("Invalid option argument \"" + args[argIndex] + "\" detected. Must be a nonnegative integer.");
-					System.exit(1);
+					// System.exit(1);
 				}
 			} else {
 				result[i] = -1;
@@ -105,13 +106,12 @@ public class BreaklineClassifier {
 
 	/** Takes an integer and returns it if it is nonnegative, otherwise prints an error
 	 *  message and exits. */
-	private static int checkArgs(int i) {
+	private static int checkArg(int i) {
 		if (i < 0) {
 			System.err.println(Integer.toString(i) + " is negative. A nonnegative integer is required.");
-			System.exit(1);
-		} else {
-			return i;
+			// System.exit(1);
 		}
+		return i;
 	}
 
 	/** Takes in a single input file and writes the corresponding output file

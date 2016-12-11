@@ -23,7 +23,7 @@ public class MIKEFileReaderTest {
 	@Test
 	public void testBasics() throws FileNotFoundException, IOException {
 		BufferedReader r = new BufferedReader(new FileReader(filePath));
-		MIKEFileReader reader = new MIKEFileReader(r);
+		MIKEFileReader reader = new MIKEFileReader(r, -1, -1);
 		CrossSection c = reader.getNext();
 		reader.close();
 		/*
@@ -36,7 +36,7 @@ public class MIKEFileReaderTest {
 	@Test
 	public void testFullExecution() throws FileNotFoundException, IOException {
 		BufferedReader r = new BufferedReader(new FileReader(filePath));
-		MIKEFileReader reader = new MIKEFileReader(r);
+		MIKEFileReader reader = new MIKEFileReader(r, -1, -1);
 		CrossSection[] csArr = new CrossSection[5];
 		CrossSection c;
 		int i = 0;

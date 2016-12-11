@@ -26,8 +26,11 @@ class OutputFormatter {
 	/** The DecimalFormat object for rounding values for the x values. */
 	private DecimalFormat _xf;
 
+	/** The number of points to output; the top N ranked points will be output. */
+	private int _n;
+
 	/** Constructs a new OutputFormatter with _writer WRITER. */
-	OutputFormatter(PrintWriter writer) {
+	OutputFormatter(PrintWriter writer, int n) {
 		_writer = writer;
 		_df = new DecimalFormat("#.###");
 		_df.setRoundingMode(RoundingMode.HALF_UP);
@@ -36,6 +39,7 @@ class OutputFormatter {
 		_chainageFormat.setMinimumFractionDigits(2);
 		_xf = new DecimalFormat("#");
 		_xf.setRoundingMode(RoundingMode.HALF_UP);
+		_n = n;
 		writeHeader();
 	}
 
