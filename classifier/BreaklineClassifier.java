@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.lang.NumberFormatException;
 
 public class BreaklineClassifier {
 
@@ -22,19 +23,16 @@ public class BreaklineClassifier {
 	/** Main method. */
 	public static void main(String[] args) {
 		
-		boolean[] opt;
+		String[] opt;
 
 		/* Check the format of the arguments and format accordingly. */
 		if (!argLenIsValid(args)) {
 			System.err.println("Invalid number of arguments. Check the format and number of arguments.");
 			System.exit(1);
-		} else if (args.length >= 3) {
-			opt = parseOptions(args);
-			// FIXME Add procedures and data for the options here.
-		} else {
-			opt = { false, false, false };
 		}
 
+		opt = parseOptions(args);
+		
 		/* Takes this file in and constructs a reader for it, and 
 		 * initializes an output file. This file is associated with a
 		 * PrintWriter, which will be wrapped in an OutputFormatter to
@@ -56,16 +54,24 @@ public class BreaklineClassifier {
 	/** Takes in a String array and determines if it is a valid argument array
 	 *  for the BreaklineClassifier. */
 	private static boolean argLenIsValid(String[] args) {
-		return args.length == 1 || (args.length >= 3 && args.length <= 5);
+		return args.length == 1 || (args.length >= 3 && args.length < 3 + OPTIONS_LENGTH);
 	}
 
 	/** Takes in a String array ARGS and determines if it has a valid options argument,
 	 *  and if the argument array contains the according number of arguments following
 	 *  the options. */
-	private static boolean[] parseOptions(String[] args) {
+	private static String[] parseOptions(String[] args) {
+
+		int[] result = new int[OPTIONS_LENGTH];
+		if (args.length == 1) {
+			for (int i = 0; i < OPTIONS_LENGTH; i++) {
+				result[i] = -1;
+			}
+			return result;
+		}
+
 		/* Extract the options string argument from the arguments string
 		 * and check that it is the correct length. */
-		boolean[] result = new boolean[OPTIONS_LENGTH];
 		String opt = args[1];
 		if (opt.length() != OPTIONS_LENGTH) {
 			System.err.println("Invalid length of the options string.");
@@ -75,30 +81,51 @@ public class BreaklineClassifier {
 		/* Iterate through the options string, checking for invalid characters as
 		 * we go. Set each value of the result array. */
 		char c;
+		int argIndex = 2;
 		for (int i = 0; i < OPTIONS_LENGTH; i++) {
 			c = opt.charAt(i);
 			if (c != '1' && c != '0') {
 				System.err.println("Invalid character \"" + c.toString() + "\" in the options string.");
 				System.exit(1);
+			} else if (c == '1') {
+				try {
+					result[i] = checkArg(Integer.parseInt(args[argIndex]));
+					argIndex++;
+				} catch (NumberFormatException excp) {
+					System.err.println("Invalid option argument \"" + args[argIndex] + "\" detected. Must be a nonnegative integer.");
+					System.exit(1);
+				}
+			} else {
+				result[i] = -1;
 			}
-			result[i] = c == '1';
 		}
 
 		return result;
 	}
 
+	/** Takes an integer and returns it if it is nonnegative, otherwise prints an error
+	 *  message and exits. */
+	private static int checkArgs(int i) {
+		if (i < 0) {
+			System.err.println(Integer.toString(i) + " is negative. A nonnegative integer is required.");
+			System.exit(1);
+		} else {
+			return i;
+		}
+	}
+
 	/** Takes in a single input file and writes the corresponding output file
 	 *  to the same directory. */
-	private static void run(File pathname, boolean[] options) {
+	private static void run(File pathname, int[] options) {
 
 		MIKEFileReader reader;
 		File outputFile;
 		OutputFormatter out;
 
 		try {
-			reader = new MIKEFileReader(reader(pathname)); 
+			reader = new MIKEFileReader(reader(pathname), options[1], options[2]); 
 			outputFile = new File(getOutputPath(pathname.getAbsolutePath()));
-			out = new OutputFormatter(new PrintWriter(outputFile));
+			out = new OutputFormatter(new PrintWriter(outputFile), options[0]);
 
 			/* Iterates through the input file, parsing a CrossSection at a time.
 		 	 * Once each CrossSection is parsed, calculates the desired metrics,
