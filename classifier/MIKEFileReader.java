@@ -20,22 +20,12 @@ class MIKEFileReader {
 	/** True if there is another breakline to be parsed. */
 	private boolean _hasNext;
 
-	/** The maximum horizontal distance from the thalweg that should be
-	 *  considered in analysis; -1 if there is no limit. */
-	private int _horizLimit;
-
-	/** The maximum vertical distance from the thalweg that should be
-	 *  considered in analysis; -1 if there is no limit. */
-	private int _vertLimit;
-
 	/** Constructs a new MIKEFileReader with the reader READER containing
 	 *  the input file. */
-	MIKEFileReader(BufferedReader reader, int horizLimit, int vertLimit) throws IOException {
+	MIKEFileReader(BufferedReader reader) throws IOException {
 		_reader = reader;
 		_hasNext = true;
 		_reader.readLine();
-		_horizLimit = horizLimit;
-		_vertLimit = vertLimit;
 	}
 
 	/** Returns true if this MFR has another CrossSection to be read and
@@ -58,7 +48,7 @@ class MIKEFileReader {
 		while (i < size) {
 			p = extractPoint(_reader.readLine());
 			/* Check for duplicate points */
-			if ((i > 0 && p.getY() != points.get(i-1).getY()) || i == 0) {
+			if ((i > 0 && p.getY() != points.get(i-1).getY()) || i == 0 ) {
 				points.add(i, p);
 				i++;
 			} else {
@@ -76,7 +66,7 @@ class MIKEFileReader {
 
 		skipLines(3);
 		_hasNext = _reader.readLine() != null;
-
+	
 		return new CrossSection(name, id, points, points.indexOf(thalweg));
 	}
 

@@ -60,8 +60,7 @@ public class BreaklineClassifier {
 	/** Takes in a String array ARGS and determines if it has a valid options argument,
 	 *  and if the argument array contains the according number of arguments following
 	 *  the options. */
-	// FIXME Should be made private unless testing.
-	static int[] parseOptions(String[] args) {
+	private static int[] parseOptions(String[] args) {
 
 		int[] result = new int[OPTIONS_LENGTH];
 		if (args.length == 1) {
@@ -87,14 +86,14 @@ public class BreaklineClassifier {
 			c = opt.charAt(i);
 			if (c != '1' && c != '0') {
 				System.err.println("Invalid character \"" + Character.toString(c) + "\" in the options string.");
-				// System.exit(1);
+				System.exit(1);
 			} else if (c == '1') {
 				try {
 					result[i] = checkArg(Integer.parseInt(args[argIndex]));
 					argIndex++;
 				} catch (NumberFormatException excp) {
 					System.err.println("Invalid option argument \"" + args[argIndex] + "\" detected. Must be a nonnegative integer.");
-					// System.exit(1);
+					System.exit(1);
 				}
 			} else {
 				result[i] = -1;
@@ -109,7 +108,7 @@ public class BreaklineClassifier {
 	private static int checkArg(int i) {
 		if (i < 0) {
 			System.err.println(Integer.toString(i) + " is negative. A nonnegative integer is required.");
-			// System.exit(1);
+			System.exit(1);
 		}
 		return i;
 	}
@@ -123,9 +122,9 @@ public class BreaklineClassifier {
 		OutputFormatter out;
 
 		try {
-			reader = new MIKEFileReader(reader(pathname), options[1], options[2]); 
+			reader = new MIKEFileReader(reader(pathname)); 
 			outputFile = new File(getOutputPath(pathname.getAbsolutePath()));
-			out = new OutputFormatter(new PrintWriter(outputFile), options[0]);
+			out = new OutputFormatter(new PrintWriter(outputFile));
 
 			/* Iterates through the input file, parsing a CrossSection at a time.
 		 	 * Once each CrossSection is parsed, calculates the desired metrics,
@@ -133,7 +132,7 @@ public class BreaklineClassifier {
 			CrossSection c = null;
 			while (reader.hasNext()) {
 				c = reader.getNext();
-				c.analyze();
+				c.analyze(options);
 				out.write(c);
 			}
 

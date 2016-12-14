@@ -75,10 +75,40 @@ class CrossSection {
 	/** Performs all analytical calculations on this CrossSection:
 	 *  inflections, subsequent ranking, and vertical and horizontal distances
 	 *  from the thalweg. */
-	void analyze() {
+	void analyze(int[] options) {
 		calculateInflections();
 		rank();
 		calculateThalwegDistances();
+		filter(options);
+	}
+
+	/** Removes all points designated by the limits in OPTIONS from this
+	 *  CrossSection. */
+	private void filter(int[] options) {
+		trimHorizVert(options[1], options[2]);
+		trimRank(options[0]);
+	}
+
+	/** Removes all points from this CrossSection that do not fit within the
+	 *  designated horizontal and vertical distance from the thalweg. */
+	private void trimHorizVert(int horizLimit, int vertLimit) {
+		int i = 0;
+		CrossSectionPoint p;
+		while (i < _points.size()) {
+			p = _points.get(i);
+			if (!isWithinLimits(p)) {
+				_points.remove(p);
+			} else {
+				i++;
+			}
+		}
+	}
+
+	/** Returns true if the given point P lies within the horizontal and
+	 *  vertical limits. */
+	private boolean isWithinLimits(CrossSectionPoint p, int horizLimit, int vertLimit) {
+		return (horizLimit == -1 || Math.abs(p.getHorizDistThal()) <= horizLimit) &&
+		       (vertLimit == -1 || Math.abs(p.getVertDistThal()) <= vertLimit);
 	}
 
 	/** Performs all thalweg distance calculations for this CrossSection. */
