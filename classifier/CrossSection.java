@@ -96,7 +96,7 @@ class CrossSection {
 		CrossSectionPoint p;
 		while (i < _points.size()) {
 			p = _points.get(i);
-			if (!isWithinLimits(p)) {
+			if (!isWithinLimits(p, horizLimit, vertLimit)) {
 				_points.remove(p);
 			} else {
 				i++;
