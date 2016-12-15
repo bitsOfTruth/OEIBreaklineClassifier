@@ -45,6 +45,9 @@ PTH = classifier
 
 CLASSES = \
 	$(PTH)/CrossSectionPoint.java \
+	$(PTH)/CSPRankComparator.java \
+	$(PTH)/CSPXComparator.java \
+	$(PTH)/CSPInflectionComparator.java \
 	$(PTH)/CrossSection.java \
 	$(PTH)/MIKEFileReader.java \
 	$(PTH)/OutputFormatter.java \

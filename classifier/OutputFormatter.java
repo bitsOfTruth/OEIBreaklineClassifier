@@ -27,7 +27,7 @@ class OutputFormatter {
 	private DecimalFormat _xf;
 
 	/** Constructs a new OutputFormatter with _writer WRITER. */
-	OutputFormatter(PrintWriter writer, int n) {
+	OutputFormatter(PrintWriter writer) {
 		_writer = writer;
 		_df = new DecimalFormat("#.###");
 		_df.setRoundingMode(RoundingMode.HALF_UP);

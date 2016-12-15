@@ -8,7 +8,7 @@ package classifier;
 import java.text.DecimalFormat;
 import java.math.RoundingMode;
 
-class CrossSectionPoint implements Comparable<CrossSectionPoint> {
+class CrossSectionPoint {
 
 	/** The x coordinate for this CrossSectionPoint. */
 	private float _x;
@@ -99,18 +99,7 @@ class CrossSectionPoint implements Comparable<CrossSectionPoint> {
 	void setVertDistThal(float y) {
 		_vertDistThal = _y - y;
 	}
-
-	/** Implements the compareTo method for the Comparable interface. */
-	public int compareTo(CrossSectionPoint p) {
-		if (_inflection > p.getInflection()) {
-			return -1;
-		} else if (_inflection == p.getInflection()) {
-			return 0;
-		} else {
-			return 1;
-		}
-	}
-
+	
 	/** Returns a String representation of this CrossSectionPoint. For testing only. */
 	String getStringRep() {
 		DecimalFormat df = new DecimalFormat("#.###");

@@ -74,7 +74,7 @@ public class CrossSectionTest {
 	 *  of inflection. */
 	static boolean isCorrectRanking(CrossSection c) {
 		ArrayList<CrossSectionPoint> points = c.getPoints();
-		Collections.sort(points);
+		Collections.sort(points, new CSPInflectionComparator());
 		for (int i = 0; i < points.size(); i++) {
 			if (points.get(i).getRank() != i+1)
 				return false;

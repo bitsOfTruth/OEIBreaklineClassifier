@@ -94,12 +94,14 @@ class CrossSection {
 	private void trimHorizVert(int horizLimit, int vertLimit) {
 		int i = 0;
 		CrossSectionPoint p;
-		while (i < _points.size()) {
-			p = _points.get(i);
-			if (!isWithinLimits(p, horizLimit, vertLimit)) {
-				_points.remove(p);
-			} else {
-				i++;
+		if (horizLimit != -1 || vertLimit != -1) {
+			while (i < _points.size()) {
+				p = _points.get(i);
+				if (!isWithinLimits(p, horizLimit, vertLimit)) {
+					_points.remove(p);
+				} else {
+					i++;
+				}
 			}
 		}
 	}
@@ -107,9 +109,20 @@ class CrossSection {
 	/** Returns true if the given point P lies within the horizontal and
 	 *  vertical limits. */
 	private boolean isWithinLimits(CrossSectionPoint p, int horizLimit, int vertLimit) {
-		return (horizLimit == -1 || Math.abs(p.getHorizDistThal()) <= horizLimit) &&
-		       (vertLimit == -1 || Math.abs(p.getVertDistThal()) <= vertLimit);
+		return (horizLimit == -1 || Math.abs(p.getHorizDistThal()) <= ((float) horizLimit)) &&
+		       (vertLimit == -1 || Math.abs(p.getVertDistThal()) <= ((float) vertLimit));
 	}
+
+	/** Filters this CrossSection to only include the top N points. */
+	private void trimRank(int n) {
+		int size = _points.size();
+		if (n != -1 && size > n) {
+			Collections.sort(_points, new CSPRankComparator());
+			_points.subList(n, size).clear();
+			Collections.sort(_points, new CSPXComparator());
+		}
+	}
+
 
 	/** Performs all thalweg distance calculations for this CrossSection. */
 	void calculateThalwegDistances() {
@@ -125,7 +138,7 @@ class CrossSection {
 	/** Sorts _points in descending order of their inflections. */
 	void rank() {
 		ArrayList<CrossSectionPoint> dupPoints = (ArrayList) _points.clone();
-		Collections.sort(dupPoints);
+		Collections.sort(dupPoints, new CSPInflectionComparator());
 		int size = _points.size();
 		for (int i = 0; i < size; i++) {
 			dupPoints.get(i).setRank(i+1);
