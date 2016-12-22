@@ -45,8 +45,12 @@ class OutputFormatter {
 		String name = c.getName();
 		float id = c.getId();
 		int size = points.size();
-		for (int i = 0; i < size; i++) {
-			writePoint(points.get(i), name, id);
+		if (c.thalIsEdge()) {
+			writeInvalid(name, id);
+		} else {
+			for (int i = 0; i < size; i++) {
+				writePoint(points.get(i), name, id);
+			}
 		}
 	}
 
@@ -55,6 +59,18 @@ class OutputFormatter {
 	private void writeHeader() {
 		_writer.println("       River          Chainage     x        y       rank    x-dist   y-dist   Location ");
 		_writer.println("-------------------- ---------- -------- -------- -------- -------- -------- ----------");
+	}
+
+	/** Writes a shortened row reflecting that the CrossSection with name
+	 *  NAME and chainage ID has a downward slope past either bank, and
+	 *  therefore has a thalweg on the edge. */
+	private void writeInvalid(String name, float id) {
+		String idStr = _chainageFormat.format(id);
+		name = name + getSpaces(20-name.length());
+		idStr = idStr = getSpaces(10-idStr.length());
+		String msg = "INVALID CROSS-SECTION: This cross-section's low point is either the left or the right edge.";
+		_writer.println(name+" "+id+" "+msg);
+		System.out.println(name+" "+id+" "+msg);
 	}
 
 	/** Writes the data of a single CrossSectionPoint P with name NAME and

@@ -33,6 +33,9 @@ class CrossSection {
 	 *  boundaries. */
 	private CrossSectionPoint _topRight;
 
+	/** True if this CrossSection's thalweg is an edge. */
+	private boolean _thalIsEdge;
+
 	/** Constructs a new CrossSection with _name NAME, _id ID, and _points POINTS,
 	 *  and the index of the thalweg THALIND. */
 	CrossSection(String name, float id, ArrayList<CrossSectionPoint> points, int thalInd) {
@@ -40,6 +43,7 @@ class CrossSection {
 		_id = id;
 		_points = points;
 		_thalweg = points.get(thalInd);
+		_thalIsEdge = thalInd == 0 || thalInd == points.size()-1;
 	}
 
 	/** Returns the name of this CrossSection's site. */
@@ -60,6 +64,11 @@ class CrossSection {
 	/** Returns this CrossSection's thalweg. */
 	CrossSectionPoint getThalweg() {
 		return _thalweg;
+	}
+
+	/** Returns _thalIsEdge. */
+	boolean thalIsEdge() {
+		return _thalIsEdge;
 	}
 
 	/** Calculates the slope between the two given points. */
@@ -102,15 +111,13 @@ class CrossSection {
 	private void trimHorizVert(int horizLimit, int vertLimit) {
 		int i = 0;
 		CrossSectionPoint p;
-		boolean haveLeft = false;
-		boolean haveRight = false;
 		if (horizLimit != -1 || vertLimit != -1) {
 			while (i < _points.size()) {
 				p = _points.get(i);
 				if (!isWithinLimits(p, horizLimit, vertLimit)) {
 					_points.remove(p);
 				} else {
-					updateTops(p, haveLeft, haveRight);
+					updateTops(p);
 					i++;
 				}
 			}
@@ -121,47 +128,40 @@ class CrossSection {
 	/** Creates separate copies of _topLeft and _topRight and replaces them
 	 *  with these copies. */
 	private void copyTops() {
-		System.out.println("copyTops");
-		/* Copy _topLeft */
-		CrossSectionPoint newLeft = new CrossSectionPoint(_topLeft.getX(), _topLeft.getY());
-		newLeft.setInflection(_topLeft.getInflection());
-		newLeft.setRank(_topLeft.getRank());
-		newLeft.setHorizDistThal(_topLeft.getHorizDistThal());
-		newLeft.setVertDistThal(_topLeft.getVertDistThal());
-		System.out.println("Before assignment");
-		_topLeft = newLeft;
-		System.out.println("After");
 
-		System.out.println(_topRight == null);
-		/* Copy _topRight */
-		CrossSectionPoint newRight = new CrossSectionPoint(_topRight.getX(), _topRight.getY());
-		System.out.println("made it through constructor");
-		newRight.setInflection(_topRight.getInflection());
-		System.out.println("made it through inflection");
-		newRight.setRank(_topRight.getRank());
-		System.out.println("rank");
-		newRight.setHorizDistThal(_topRight.getHorizDistThal());
-		System.out.println("horiz");
-		newRight.setVertDistThal(_topRight.getVertDistThal());
-		System.out.println("vert");
-		_topRight = newRight;
+		if (_topLeft != null) {
+			/* Copy _topLeft */
+			CrossSectionPoint newLeft = new CrossSectionPoint(_topLeft.getX(), _topLeft.getY());
+			newLeft.setInflection(_topLeft.getInflection());
+			newLeft.setRank(_topLeft.getRank());
+			newLeft.setHorizDistThal(_topLeft.getHorizDistThal());
+			newLeft.setVertDistThal(_topLeft.getVertDistThal());
+			_topLeft = newLeft;
+		}
 
-		System.out.println("copyTops made it through the right");
+		if (_topRight != null) {
+			/* Copy _topRight */
+			CrossSectionPoint newRight = new CrossSectionPoint(_topRight.getX(), _topRight.getY());
+			newRight.setInflection(_topRight.getInflection());
+			newRight.setRank(_topRight.getRank());
+			newRight.setHorizDistThal(_topRight.getHorizDistThal());
+			newRight.setVertDistThal(_topRight.getVertDistThal());
+			_topRight = newRight;
+		}
+
 	}
 
 	/** Checks if this point should replace either _topLeft or _topRight. */
-	private void updateTops(CrossSectionPoint p, boolean haveLeft, boolean haveRight) {
+	private void updateTops(CrossSectionPoint p) {
 		float dist = p.getHorizDistThal();
 		int topRank;
 		if (dist < 0) {
-			System.out.println("left updateTops " + p.getX());
-			if (!haveLeft)
+			if (_topLeft == null)
 				_topLeft = p;
 			topRank = _topLeft.getRank();
 			_topLeft = Math.min(topRank, p.getRank()) == topRank ? _topLeft : p;
 		} else if (dist > 0) {
-			System.out.println("right updateTops " + p.getY());
-			if (!haveRight)
+			if (_topRight == null)
 				_topRight = p;
 			topRank = _topRight.getRank();
 			_topRight = Math.min(topRank, p.getRank()) == topRank ? _topRight : p;
@@ -188,10 +188,9 @@ class CrossSection {
 
 	/** Ensures that _topLeft and _topRight will be included. */
 	private void addTops() {
-		System.out.println("addTops");
-		if (!_points.contains(_topLeft))
+		if (_topLeft != null && !_points.contains(_topLeft))
 			_points.add(_topLeft);
-		if (!_points.contains(_topRight))
+		if (_topRight != null && !_points.contains(_topRight))
 			_points.add(_topRight);
 	}
 
