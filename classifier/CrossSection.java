@@ -117,11 +117,11 @@ class CrossSection {
 				if (!isWithinLimits(p, horizLimit, vertLimit)) {
 					_points.remove(p);
 				} else {
-					updateTops(p);
+					// updateTops(p);
 					i++;
 				}
 			}
-			copyTops();
+			// copyTops();
 		}
 	}
 
@@ -181,7 +181,7 @@ class CrossSection {
 		if (n != -1 && size > n) {
 			Collections.sort(_points, new CSPRankComparator());
 			_points.subList(n, size).clear();
-			addTops();
+			// addTops();
 			Collections.sort(_points, new CSPXComparator());
 		}
 	}
