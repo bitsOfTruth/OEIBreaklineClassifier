@@ -25,14 +25,6 @@ class CrossSection {
 	/** The thalweg of this CrossSection. */
 	private CrossSectionPoint _thalweg;
 
-	/** The top ranked point to the left of the thalweg within the horizontal
-	 *  boundaries. */
-	private CrossSectionPoint _topLeft;
-
-	/** The top ranked point to the right of the thalweg within the horzontal
-	 *  boundaries. */
-	private CrossSectionPoint _topRight;
-
 	/** True if this CrossSection's thalweg is an edge. */
 	private boolean _thalIsEdge;
 
@@ -117,54 +109,9 @@ class CrossSection {
 				if (!isWithinLimits(p, horizLimit, vertLimit)) {
 					_points.remove(p);
 				} else {
-					// updateTops(p);
 					i++;
 				}
 			}
-			// copyTops();
-		}
-	}
-
-	/** Creates separate copies of _topLeft and _topRight and replaces them
-	 *  with these copies. */
-	private void copyTops() {
-
-		if (_topLeft != null) {
-			/* Copy _topLeft */
-			CrossSectionPoint newLeft = new CrossSectionPoint(_topLeft.getX(), _topLeft.getY());
-			newLeft.setInflection(_topLeft.getInflection());
-			newLeft.setRank(_topLeft.getRank());
-			newLeft.setHorizDistThal(_topLeft.getHorizDistThal());
-			newLeft.setVertDistThal(_topLeft.getVertDistThal());
-			_topLeft = newLeft;
-		}
-
-		if (_topRight != null) {
-			/* Copy _topRight */
-			CrossSectionPoint newRight = new CrossSectionPoint(_topRight.getX(), _topRight.getY());
-			newRight.setInflection(_topRight.getInflection());
-			newRight.setRank(_topRight.getRank());
-			newRight.setHorizDistThal(_topRight.getHorizDistThal());
-			newRight.setVertDistThal(_topRight.getVertDistThal());
-			_topRight = newRight;
-		}
-
-	}
-
-	/** Checks if this point should replace either _topLeft or _topRight. */
-	private void updateTops(CrossSectionPoint p) {
-		float dist = p.getHorizDistThal();
-		int topRank;
-		if (dist < 0) {
-			if (_topLeft == null)
-				_topLeft = p;
-			topRank = _topLeft.getRank();
-			_topLeft = Math.min(topRank, p.getRank()) == topRank ? _topLeft : p;
-		} else if (dist > 0) {
-			if (_topRight == null)
-				_topRight = p;
-			topRank = _topRight.getRank();
-			_topRight = Math.min(topRank, p.getRank()) == topRank ? _topRight : p;
 		}
 	}
 
@@ -181,19 +128,9 @@ class CrossSection {
 		if (n != -1 && size > n) {
 			Collections.sort(_points, new CSPRankComparator());
 			_points.subList(n, size).clear();
-			// addTops();
 			Collections.sort(_points, new CSPXComparator());
 		}
 	}
-
-	/** Ensures that _topLeft and _topRight will be included. */
-	private void addTops() {
-		if (_topLeft != null && !_points.contains(_topLeft))
-			_points.add(_topLeft);
-		if (_topRight != null && !_points.contains(_topRight))
-			_points.add(_topRight);
-	}
-
 
 	/** Performs all thalweg distance calculations for this CrossSection. */
 	void calculateThalwegDistances() {
