@@ -1,1 +1,1 @@
-Update later.
+A Java command line application developed for use by O'Connor Environmental, Inc. Takes in a file output by MIKE software (http://www.mikepoweredbydhi.com) of topographical LiDar data of stream channels, analyzes that data, and extracts critical points of interest (e.g. left and right banks).
