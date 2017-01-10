@@ -81,8 +81,7 @@ class MIKEFileReader {
 				try {
 					return Float.parseFloat(str);
 				} catch (NumberFormatException excp) {
-					System.err.println("The CrossSection ID isn't a number, the file's format may be incorrect.");
-					System.exit(1);
+					ErrorHandler.handle(CS_ID_NAN);
 				}
 			}
 		}
@@ -96,8 +95,7 @@ class MIKEFileReader {
 		try {
 			return Integer.parseInt(strArr[1]);
 		} catch (NumberFormatException excp) {
-			System.err.println("The CrossSection size isn't a number, the file's format may be incorrect.");
-			System.exit(1);
+			ErrorHandler.handle(CS_SIZE_NAN);
 		}
 
 		return 0;
@@ -110,8 +108,7 @@ class MIKEFileReader {
 			return new CrossSectionPoint(Float.parseFloat(strArr[1]),
 					     Float.parseFloat(strArr[2]));
 		} catch (NumberFormatException excp) {
-			System.err.println("One of the points contains non-numerical characters, the file's format may be incorrect.");
-			System.exit(1);
+			ErrorHandler.handle(PT_HAS_NAN);
 		}
 
 		return null;

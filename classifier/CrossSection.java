@@ -84,7 +84,7 @@ class CrossSection {
 	/** Performs all analytical calculations on this CrossSection:
 	 *  inflections, subsequent ranking, and vertical and horizontal distances
 	 *  from the thalweg. */
-	void analyze(int[] options) {
+	void analyze(Options options) {
 		calculateInflections();
 		rank();
 		calculateThalwegDistances();
@@ -93,9 +93,9 @@ class CrossSection {
 
 	/** Removes all points designated by the limits in OPTIONS from this
 	 *  CrossSection. */
-	private void filter(int[] options) {
+	private void filter(Options options) {
 		trimHorizVert(options[1], options[2]);
-		trimRank(options[0]);
+		trimRank(options.getN());
 	}
 
 	/** Removes all points from this CrossSection that do not fit within the

@@ -22,16 +22,12 @@ public class BreaklineClassifier {
 
 	/** Main method. */
 	public static void main(String[] args) {
-		
-		int[] opt;
 
 		/* Check the format of the arguments and format accordingly. */
-		if (!argLenIsValid(args)) {
-			System.err.println("Invalid number of arguments. Check the format and number of arguments.");
-			System.exit(1);
-		}
+		if (!argLenIsValid(args))
+			ErrorHandler.handle(INVALID_ARG_LEN);
 
-		opt = parseOptions(args);
+		Options opt = new Options(args);
 		
 		/* Takes this file in and constructs a reader for it, and 
 		 * initializes an output file. This file is associated with a
@@ -64,8 +60,8 @@ public class BreaklineClassifier {
 
 		int[] result = new int[OPTIONS_LENGTH];
 		if (args.length == 1) {
-			for (int i = 0; i < OPTIONS_LENGTH; i++) {
-				result[i] = -1;
+			for (int i = 0; i < result.length; i++) {
+				result[i] = Integer.MAX_VALUE;
 			}
 			return result;
 		}
@@ -82,21 +78,24 @@ public class BreaklineClassifier {
 		 * we go. Set each value of the result array. */
 		char c;
 		int argIndex = 2;
+		int optIndex = 0, resultIndex = 0;
 		for (int i = 0; i < OPTIONS_LENGTH; i++) {
-			c = opt.charAt(i);
+			c = opt.charAt(optIndex);
 			if (c != '1' && c != '0') {
 				System.err.println("Invalid character \"" + Character.toString(c) + "\" in the options string.");
 				System.exit(1);
-			} else if (c == '1') {
+			} else if (c == '1' && argIndex > 2) { // For range cases
+				
+			} else if (c == '1') { // For non-range cases
 				try {
-					result[i] = checkArg(Integer.parseInt(args[argIndex]));
+					result[resultIndex] = checkArg(Integer.parseInt(args[argIndex]));
 					argIndex++;
 				} catch (NumberFormatException excp) {
 					System.err.println("Invalid option argument \"" + args[argIndex] + "\" detected. Must be a nonnegative integer.");
 					System.exit(1);
 				}
 			} else {
-				result[i] = -1;
+				result[resultIndex] = Integer.MAX_VALUE;
 			}
 		}
 
@@ -115,7 +114,7 @@ public class BreaklineClassifier {
 
 	/** Takes in a single input file and writes the corresponding output file
 	 *  to the same directory. */
-	private static void run(File pathname, int[] options) {
+	private static void run(File pathname, Options options) {
 
 		MIKEFileReader reader;
 		File outputFile;
@@ -139,12 +138,10 @@ public class BreaklineClassifier {
 			reader.close();
 			out.close();
 		} catch (FileNotFoundException excp) {
-			System.err.println("File \"" + pathname.getName() + "\" not found.");
+			ErrorHandler.handle(FILE_NOT_FOUND, pathname.getName());
 		} catch (IOException excp) {
-			System.err.println("IO error on read of \"" + pathname.getName() + "\".");
-		} /*catch (NullPointerException excp) {
-			System.err.println("Null pointer error, call Trevor.");
-		}*/
+			ErrorHandler.handle(IO_ERROR, pathname.getName());
+		}
 
 	}
 
