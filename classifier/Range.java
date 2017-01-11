@@ -22,7 +22,7 @@ class Range {
 
 	/** Constructs a new Range object with no limits. */
 	Range() {
-		Range(Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
+		this(Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
 	}
 
 	/** Returns true if the given value N falls within this Range and false otherwise. */

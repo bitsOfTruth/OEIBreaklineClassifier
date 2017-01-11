@@ -25,7 +25,7 @@ public class BreaklineClassifier {
 
 		/* Check the format of the arguments and format accordingly. */
 		if (!argLenIsValid(args))
-			ErrorHandler.handle(INVALID_ARG_LEN);
+			ErrorHandler.handle(ErrorCode.INVALID_ARG_LEN);
 
 		Options opt = new Options(args);
 		
@@ -138,9 +138,9 @@ public class BreaklineClassifier {
 			reader.close();
 			out.close();
 		} catch (FileNotFoundException excp) {
-			ErrorHandler.handle(FILE_NOT_FOUND, pathname.getName());
+			ErrorHandler.handle(ErrorCode.FILE_NOT_FOUND, pathname.getName());
 		} catch (IOException excp) {
-			ErrorHandler.handle(IO_ERROR, pathname.getName());
+			ErrorHandler.handle(ErrorCode.IO_ERROR, pathname.getName());
 		}
 
 	}

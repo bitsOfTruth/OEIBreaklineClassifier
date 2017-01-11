@@ -81,7 +81,7 @@ class MIKEFileReader {
 				try {
 					return Float.parseFloat(str);
 				} catch (NumberFormatException excp) {
-					ErrorHandler.handle(CS_ID_NAN);
+					ErrorHandler.handle(ErrorCode.CS_ID_NAN);
 				}
 			}
 		}
@@ -95,7 +95,7 @@ class MIKEFileReader {
 		try {
 			return Integer.parseInt(strArr[1]);
 		} catch (NumberFormatException excp) {
-			ErrorHandler.handle(CS_SIZE_NAN);
+			ErrorHandler.handle(ErrorCode.CS_SIZE_NAN);
 		}
 
 		return 0;
@@ -108,7 +108,7 @@ class MIKEFileReader {
 			return new CrossSectionPoint(Float.parseFloat(strArr[1]),
 					     Float.parseFloat(strArr[2]));
 		} catch (NumberFormatException excp) {
-			ErrorHandler.handle(PT_HAS_NAN);
+			ErrorHandler.handle(ErrorCode.PT_HAS_NAN);
 		}
 
 		return null;

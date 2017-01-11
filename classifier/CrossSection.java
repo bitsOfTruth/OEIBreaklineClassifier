@@ -94,38 +94,29 @@ class CrossSection {
 	/** Removes all points designated by the limits in OPTIONS from this
 	 *  CrossSection. */
 	private void filter(Options options) {
-		trimHorizVert(options[1], options[2]);
+		trimHorizVert(options);
 		trimRank(options.getN());
 	}
 
 	/** Removes all points from this CrossSection that do not fit within the
-	 *  designated horizontal and vertical distance from the thalweg. */
-	private void trimHorizVert(int horizLimit, int vertLimit) {
+	 *  range of designated horizontal and vertical distance from the thalweg. */
+	private void trimHorizVert(Options options) {
 		int i = 0;
 		CrossSectionPoint p;
-		if (horizLimit != -1 || vertLimit != -1) {
-			while (i < _points.size()) {
-				p = _points.get(i);
-				if (!isWithinLimits(p, horizLimit, vertLimit)) {
-					_points.remove(p);
-				} else {
-					i++;
-				}
+		while (i < _points.size()) {
+			p = _points.get(i);
+			if (!options.isWithinLimits(p)) {
+				_points.remove(p);
+			} else {
+				i++;
 			}
 		}
-	}
-
-	/** Returns true if the given point P lies within the horizontal and
-	 *  vertical limits. */
-	private boolean isWithinLimits(CrossSectionPoint p, int horizLimit, int vertLimit) {
-		return (horizLimit == -1 || Math.abs(p.getHorizDistThal()) <= ((float) horizLimit)) &&
-		       (vertLimit == -1 || Math.abs(p.getVertDistThal()) <= ((float) vertLimit));
 	}
 
 	/** Filters this CrossSection to only include the top N points. */
 	private void trimRank(int n) {
 		int size = _points.size();
-		if (n != -1 && size > n) {
+		if (size > n) {
 			Collections.sort(_points, new CSPRankComparator());
 			_points.subList(n, size).clear();
 			Collections.sort(_points, new CSPXComparator());

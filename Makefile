@@ -44,7 +44,12 @@ JC = javac
 PTH = classifier
 
 CLASSES = \
+	$(PTH)/Range.java \
 	$(PTH)/CrossSectionPoint.java \
+	$(PTH)/Options.java \
+	$(PTH)/ErrorCode.java \
+	$(PTH)/ErrorHandler.java \
+	$(PTH)/InvalidRangeException.java \
 	$(PTH)/CSPRankComparator.java \
 	$(PTH)/CSPXComparator.java \
 	$(PTH)/CSPInflectionComparator.java \

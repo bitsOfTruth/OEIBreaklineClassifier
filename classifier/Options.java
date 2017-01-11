@@ -25,7 +25,7 @@ class Options {
 		if (args.length == 1) {
 			setEmpty();
 		} else if (args[1].length() != OPTIONS_LENGTH) {
-			ErrorHandler.handle(INVALID_OPT_LEN);
+			ErrorHandler.handle(ErrorCode.INVALID_OPT_LEN);
 		} else {
 			parse(args);
 		}
@@ -43,36 +43,45 @@ class Options {
 		_vRange = new Range();
 	}
 
+	/** Returns true if the given point is within the bounds of this Options
+	 *  object's horizontal and vertical ranges. */
+	boolean isWithinLimits(CrossSectionPoint p) {
+		return _hRange.inRange(p.getHorizDistThal()) &&
+		       _vRange.inRange(p.getVertDistThal());
+	}
+
 	/** Parse the options in the arguments line ARGS. */
 	private void parse(String[] args) {
 		boolean[] opts = parseOpt(args[1]);
-		int argIndex = 0;
+		int argIndex = 2;
 		for (int i = 0; i < OPTIONS_LENGTH; i++) {
 			if (i < 1) { // Handle single nonnegative integer case
-				argIndex += handleSingle(opts[i], args[argIndex]);
+				argIndex += handleSingle(opts[i], args, argIndex);
 			} else { // Handle the integer range case
-				argIndex += handleRange(opts[i], args[argIndex], i);
+				argIndex += handleRange(opts[i], args, argIndex, i);
 			}
 		}
 	}
 
 	/** Takes in a boolean flag and an argument string, parses the argument
 	 *  and stores it, and returns 1 if the argument index should be incremented. */
-	private int handleSingle(boolean flag, String arg) {
-		if (!flag)
+	private int handleSingle(boolean flag, String[] arg, int argIndex) {
+		if (!flag) {
+			_n = Integer.MAX_VALUE;
 			return 0;
+		}
 
-		int n;
+		int n = 0;
 		try {
-			n = Integer.parseInt(arg);
+			n = Integer.parseInt(arg[argIndex]);
 		} catch (NumberFormatException excp) {
 			// The argument wasn't a parsable integer
-			ErrorHandler.handle(ARG_NOT_INT, arg);
+			ErrorHandler.handle(ErrorCode.ARG_NOT_INT, arg[argIndex]);
 		}
 
 		if (n < 0)
 			// The argument was a negative integer.
-			ErrorHandler.handle(NEGATIVE_INT, arg);
+			ErrorHandler.handle(ErrorCode.NEGATIVE_INT, arg[argIndex]);
 		_n = n;
 		return 1;
 	}
@@ -80,19 +89,25 @@ class Options {
 	/** Takes in a boolean flag and an argument string, parses the argument
 	 *  and stores it, and returns 1 if the argument index should be incremented;
 	 *  expects a range in the format "min,max" or "max,min". */
-	private int handleRange(boolean flag, String arg, int i) {
-		if (!flag)
+	private int handleRange(boolean flag, String[] arg, int argIndex, int i) {
+		if (!flag && i == 1) {
+			_hRange = new Range();
 			return 0;
+		} else if (!flag) {
+			_vRange = new Range();
+			return 0;
+		}
 
+		Range range = new Range();
 		try {	
 			// Parse the range argument and construct a Range object
-			Range range = parseRange(arg);
+			range = parseRange(arg[argIndex]);
 		} catch (NumberFormatException excp) {
 			// One of the elements of the range was not a number
-			ErrorHandler.handle(ARG_NOT_FLOAT, excp.getMessage());
+			ErrorHandler.handle(ErrorCode.ARG_NOT_FLOAT, excp.getMessage());
 		} catch (InvalidRangeException excp) {
 			// The range argument was not properly formatted
-			ErrorHandler.handle(INVALID_RANGE, arg);
+			ErrorHandler.handle(ErrorCode.INVALID_RANGE, arg[argIndex]);
 		}
 
 		if (i == 1) {
@@ -106,7 +121,7 @@ class Options {
 
 	/** Attempts to read the range argument and construct the proper range object;
 	 *  will throw exceptions to handle errors. */
-	private Range parseRange(String arg) {
+	private Range parseRange(String arg) throws InvalidRangeException {
 		String[] toks = arg.split(",");
 
 		if (toks.length != 2)
@@ -115,15 +130,15 @@ class Options {
 		float first, second;
 
 		try {
-			first = Float.parseFloat(arg[0]);
+			first = Float.parseFloat(toks[0]);
 		} catch (NumberFormatException excp) {
-			first = checkInf(arg[0], excp);
+			first = checkInf(toks[0]);
 		}
 
 		try {
-			second = Float.parseFloat(arg[1]);
+			second = Float.parseFloat(toks[1]);
 		} catch (NumberFormatException excp) {
-			second = checkInf(arg[1], excp);
+			second = checkInf(toks[1]);
 		}
 
 		return new Range(Math.min(first, second), Math.max(first, second));
@@ -149,7 +164,7 @@ class Options {
 		for (int i = 0; i < opts.length(); i++) {
 			c = opts.charAt(i);
 			if (c != '1' && c != '0') {
-				ErrorHandler.handle(INVALID_OPT_CHAR, Character.toString(c));
+				ErrorHandler.handle(ErrorCode.INVALID_OPT_CHAR, Character.toString(c));
 			} else {
 				result[i] = c == '1';
 			}
