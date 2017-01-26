@@ -105,7 +105,7 @@ class OutputFormatter {
 
 	/** Converts meters to feet. */
 	static float metersToFeet(float meters) {
-		return meters * ((float) 3.28);
+		return meters * ((float) 3.28084);
 	}
 
 	/** Closes the _writer for this PrintWriter. Should only be called when after

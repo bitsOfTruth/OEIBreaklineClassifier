@@ -47,6 +47,14 @@ public class BreaklineClassifierTest {
 
 	/*
 	@Test
+	public void testMetersToFeet() {
+		System.out.println("TESTING METERSTOFEET");
+		System.out.println(OutputFormatter.metersToFeet((float) 72.093));
+		System.out.println(OutputFormatter.metersToFeet((float) 71.181));
+		System.out.println(OutputFormatter.metersToFeet((float) 72.193));
+	}
+
+	@Test
 	public void testParseOptions() {
 		errContent = new ByteArrayOutputStream();
 		System.setErr(new PrintStream(errContent));
